@@ -7,8 +7,8 @@ import CaptureScreen from './screens/CaptureScreen';
 import BlueprintScreen from './screens/BlueprintScreen';
 import StillYouScreen from './screens/StillYouScreen';
 import OnePagerScreen from './screens/OnePagerScreen';
+import WeekScreen from './screens/WeekScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import Placeholder from './screens/Placeholder';
 
 
 const NAV: { id: Tab; label: string; icon: string }[] = [
@@ -62,14 +62,14 @@ export default function App() {
           <SettingsScreen />
         ) : tab === 'capture' ? (
           <CaptureScreen onGo={setTab} />
+        ) : tab === 'week' ? (
+          <WeekScreen onGo={setTab} />
         ) : tab === 'pager' ? (
           <OnePagerScreen onGo={setTab} />
         ) : tab === 'still' ? (
           <StillYouScreen />
-        ) : tab === 'blueprint' ? (
-          <BlueprintScreen />
         ) : (
-          <Placeholder title={NAV.find((n) => n.id === tab)!.label} />
+          <BlueprintScreen />
         )}
       </main>
 

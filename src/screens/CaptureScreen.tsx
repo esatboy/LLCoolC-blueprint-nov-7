@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { repo } from '../data/repo';
-import { useCaptures } from '../data/hooks';
+import { useCaptures, useDueCaptures } from '../data/hooks';
 import { confirmPillar, refreshSuggestion, saveCapture } from '../lib/capture';
 import { fileToVariants } from '../lib/image';
 import { PILLARS, PILLAR_BY_ID } from '../lib/pillars';
@@ -28,6 +28,7 @@ function pickMime(): string {
 
 export default function CaptureScreen({ onGo }: { onGo: (t: 'blueprint' | 'still') => void }) {
   const captures = useCaptures();
+  const due = useDueCaptures().length;
   const [mode, setMode] = useState<'idle' | 'write' | 'record'>('idle');
   const [draft, setDraft] = useState(readDraft);
   const [savedId, setSavedId] = useState<string | null>(null);
@@ -129,6 +130,13 @@ export default function CaptureScreen({ onGo }: { onGo: (t: 'blueprint' | 'still
       {unsorted > 0 && (
         <button onClick={() => onGo('blueprint')} className="flex min-h-14 w-full items-center justify-between rounded-xl border border-line bg-surface px-4 text-left">
           <span>{unsorted} idea{unsorted === 1 ? '' : 's'} waiting to be sorted</span>
+          <span aria-hidden>→</span>
+        </button>
+      )}
+
+      {due > 0 && (
+        <button onClick={() => onGo('still')} className="flex min-h-14 w-full items-center justify-between rounded-xl border border-line bg-surface px-4 text-left">
+          <span>🔥 {due} idea{due === 1 ? '' : 's'} ready: Still you?</span>
           <span aria-hidden>→</span>
         </button>
       )}
