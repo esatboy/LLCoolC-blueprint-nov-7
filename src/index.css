@@ -1,0 +1,103 @@
+@import 'tailwindcss';
+
+/* Bundled locally (latin only) so headings render offline. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* Warm paper in light, low-glare kitchen-at-1am in dark. */
+:root {
+  --bg: #faf5ec;
+  --surface: #fffdf8;
+  --surface-2: #f3eadb;
+  --ink: #2a1f17;
+  --muted: #65564a;
+  --line: #e2d4bd;
+  --accent: #b4472a;
+  --accent-ink: #ffffff;
+  --fire: #c2410c;
+  --ok: #2f6b3a;
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  --bg: #17120e;
+  --surface: #231c16;
+  --surface-2: #2d241c;
+  --ink: #f6ecdc;
+  --muted: #c2ae97;
+  --line: #43362a;
+  --accent: #ec8a63;
+  --accent-ink: #1a0f09;
+  --fire: #ff9a5c;
+  --ok: #7fc48b;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #17120e;
+    --surface: #231c16;
+    --surface-2: #2d241c;
+    --ink: #f6ecdc;
+    --muted: #c2ae97;
+    --line: #43362a;
+    --accent: #ec8a63;
+    --accent-ink: #1a0f09;
+    --fire: #ff9a5c;
+    --ok: #7fc48b;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accentink: var(--accent-ink);
+  --color-fire: var(--fire);
+  --color-ok: var(--ok);
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 18px; /* readable at arm's length */
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
