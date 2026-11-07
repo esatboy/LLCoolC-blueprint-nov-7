@@ -35,13 +35,14 @@ function useTheme(): Settings {
 function useAutoSync() {
   const uid = useSession()?.user.id;
   const captures = useCaptures();
+  const conceptAt = useMeta<number>('conceptUpdatedAt', 0); // editing the one-pager name/pitch also syncs
   useEffect(() => {
     if (!uid) return;
     const run = () => { if (navigator.onLine) syncNow(uid).catch(() => { /* recorded in meta.syncError */ }); };
     const t = window.setTimeout(run, 3000);
     window.addEventListener('online', run);
     return () => { window.clearTimeout(t); window.removeEventListener('online', run); };
-  }, [uid, captures]);
+  }, [uid, captures, conceptAt]);
 }
 
 export default function App() {
