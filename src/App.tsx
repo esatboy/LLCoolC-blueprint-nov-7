@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { APP_NAME } from './config';
 import { repo } from './data/repo';
 import { useMeta } from './data/hooks';
-import { DEFAULT_SETTINGS, type Settings } from './types';
+import { DEFAULT_SETTINGS, type Settings, type Tab } from './types';
+import CaptureScreen from './screens/CaptureScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import Placeholder from './screens/Placeholder';
 
-export type Tab = 'capture' | 'blueprint' | 'still' | 'week' | 'pager' | 'settings';
 
 const NAV: { id: Tab; label: string; icon: string }[] = [
   { id: 'capture', label: 'Capture', icon: '✚' },
@@ -56,6 +56,8 @@ export default function App() {
       <main className="flex-1 overflow-y-auto px-4 pb-6">
         {tab === 'settings' ? (
           <SettingsScreen />
+        ) : tab === 'capture' ? (
+          <CaptureScreen onGo={setTab} />
         ) : (
           <Placeholder title={NAV.find((n) => n.id === tab)!.label} />
         )}
@@ -70,7 +72,7 @@ export default function App() {
             key={n.id}
             onClick={() => setTab(n.id)}
             aria-current={tab === n.id ? 'page' : undefined}
-            className={`flex min-h-16 flex-col items-center justify-center gap-0.5 text-xs font-medium ${
+            className={`flex min-h-16 flex-col items-center justify-center gap-0.5 whitespace-nowrap text-[11px] font-medium ${
               tab === n.id ? 'text-accent' : 'text-muted'
             }`}
           >

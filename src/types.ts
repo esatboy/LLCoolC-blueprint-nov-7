@@ -2,6 +2,7 @@ export type CaptureType = 'text' | 'photo' | 'voice';
 export type Origin = 'vision' | 'lesson' | 'inspiration';
 export type PillarId = 'food' | 'guest' | 'space' | 'service' | 'brand' | 'team' | 'numbers';
 export type Answer = 'fire' | 'meh' | 'no';
+export type Tab = 'capture' | 'blueprint' | 'still' | 'week' | 'pager' | 'settings';
 
 export interface Resonance {
   at: number;
