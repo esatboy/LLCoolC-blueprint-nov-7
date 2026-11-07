@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { APP_NAME } from './config';
 import { repo } from './data/repo';
-import { useMeta } from './data/hooks';
+import { useDueCaptures, useMeta } from './data/hooks';
 import { DEFAULT_SETTINGS, type Settings, type Tab } from './types';
 import CaptureScreen from './screens/CaptureScreen';
 import BlueprintScreen from './screens/BlueprintScreen';
+import StillYouScreen from './screens/StillYouScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import Placeholder from './screens/Placeholder';
 
@@ -30,6 +31,7 @@ function useTheme(): Settings {
 export default function App() {
   const [tab, setTab] = useState<Tab>('capture'); // opens straight to capture
   useTheme();
+  const dueCount = useDueCaptures().length;
 
   useEffect(() => {
     void (async () => {
@@ -59,6 +61,8 @@ export default function App() {
           <SettingsScreen />
         ) : tab === 'capture' ? (
           <CaptureScreen onGo={setTab} />
+        ) : tab === 'still' ? (
+          <StillYouScreen />
         ) : tab === 'blueprint' ? (
           <BlueprintScreen />
         ) : (
@@ -79,7 +83,12 @@ export default function App() {
               tab === n.id ? 'text-accent' : 'text-muted'
             }`}
           >
-            <span aria-hidden className="text-xl leading-none">{n.icon}</span>
+            <span aria-hidden className="relative text-xl leading-none">
+              {n.icon}
+              {n.id === 'still' && dueCount > 0 && (
+                <span className="absolute -right-3 -top-2 grid min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold leading-4 text-accentink">{dueCount}</span>
+              )}
+            </span>
             {n.label}
           </button>
         ))}
