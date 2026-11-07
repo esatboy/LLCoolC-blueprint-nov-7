@@ -91,7 +91,7 @@ An on-device event log records captures, prompts shown and answered, exports and
 
 The app is still local-first: IndexedDB is what the UI reads, and it works fully offline. Signing in (Settings > Cloud backup) adds a background sync to a Supabase project:
 
-- **Sign-in:** email one-time code (no redirect, works in the installed PWA).
+- **Sign-in:** email and password (Supabase Auth). If "Confirm email" is still on in the project, new accounts must click the emailed link once before signing in; turn it off under Authentication > Sign In / Providers > Email. There is no password-reset screen yet.
 - **What syncs:** captures (text, tags, pillar, resonance history), photos and voice notes (private Storage bucket `captures`, folder per user), and the one-pager name/pitch/hero photos. **Never synced:** sample data, usage event log, settings (theme, LLM endpoint).
 - **Conflicts:** last-write-wins by `updatedAt`. Pull first, then push. Runs on sign-in, 3s after changes, and when the phone comes back online.
 - **Security:** row-level security on `captures` and `concept_meta` (`auth.uid() = user_id`), storage policies scoped to `<uid>/`.

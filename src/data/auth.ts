@@ -16,16 +16,20 @@ export function useSession(): Session | null {
   return session;
 }
 
-/** Step 1: email a 6-digit code. Creates the account on first use. */
-export async function sendCode(email: string): Promise<string | null> {
-  const { error } = await supabase!.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-  return error?.message ?? null;
+export const MIN_PASSWORD = 8;
+
+export interface AuthOutcome { error: string | null; needsConfirm?: boolean; }
+
+/** Create an account. If the project still requires email confirmation, no session is returned yet. */
+export async function signUp(email: string, password: string): Promise<AuthOutcome> {
+  const { data, error } = await supabase!.auth.signUp({ email, password });
+  if (error) return { error: error.message };
+  return { error: null, needsConfirm: !data.session };
 }
 
-/** Step 2: verify the code (works inside an installed PWA, no redirect needed). */
-export async function verifyCode(email: string, token: string): Promise<string | null> {
-  const { error } = await supabase!.auth.verifyOtp({ email, token, type: 'email' });
-  return error?.message ?? null;
+export async function signIn(email: string, password: string): Promise<AuthOutcome> {
+  const { error } = await supabase!.auth.signInWithPassword({ email, password });
+  return { error: error?.message ?? null };
 }
 
 export const signOut = () => supabase!.auth.signOut();

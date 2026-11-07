@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { cloudConfigured, sendCode, signOut, useSession, verifyCode } from '../data/auth';
+import { cloudConfigured, MIN_PASSWORD, signIn, signOut, signUp, useSession } from '../data/auth';
 import { useMeta } from '../data/hooks';
 import { resetSyncState, syncNow } from '../data/sync';
 
@@ -8,16 +8,24 @@ export default function CloudCard() {
   const session = useSession();
   const lastSyncedAt = useMeta<number>('lastSyncedAt', 0);
   const syncError = useMeta<string>('syncError', '');
+  const [mode, setMode] = useState<'signin' | 'signup'>('signup');
   const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
+  const [info, setInfo] = useState('');
   const [busy, setBusy] = useState(false);
 
   const run = async (fn: () => Promise<void>) => {
-    setBusy(true); setMsg('');
+    setBusy(true); setMsg(''); setInfo('');
     try { await fn(); } catch (e) { setMsg(e instanceof Error ? e.message : 'Something went wrong'); } finally { setBusy(false); }
   };
+
+  async function submit() {
+    const out = mode === 'signup' ? await signUp(email.trim(), password) : await signIn(email.trim(), password);
+    if (out.error) throw new Error(out.error);
+    if (out.needsConfirm) setInfo(`Check ${email.trim()} for a confirmation link, then come back and sign in.`);
+    else setPassword('');
+  }
 
   if (!cloudConfigured) {
     return (
@@ -49,27 +57,34 @@ export default function CloudCard() {
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
-          <p className="text-muted">Off by default. Signing in copies your ideas, photos and voice notes to your private account so you can recover or sync them. Without it, nothing leaves this device.</p>
-          {!sent ? (
-            <>
-              <input type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" aria-label="Email" className="min-h-12 w-full rounded-xl border border-line bg-bg px-3" />
-              <button disabled={busy || !email.includes('@')} onClick={() => run(async () => { const err = await sendCode(email.trim()); if (err) throw new Error(err); setSent(true); })} className="min-h-12 w-full rounded-xl bg-accent font-semibold text-accentink disabled:opacity-50">
-                Email me a code
-              </button>
-            </>
-          ) : (
-            <>
-              <p className="text-muted">Enter the code we sent to {email}.</p>
-              <input inputMode="numeric" autoComplete="one-time-code" value={code} onChange={(e) => setCode(e.target.value.trim())} placeholder="Code" aria-label="Code from email" className="min-h-12 w-full rounded-xl border border-line bg-bg px-3 text-center text-2xl tracking-widest" />
-              <button disabled={busy || code.length < 6} onClick={() => run(async () => { const err = await verifyCode(email.trim(), code); if (err) throw new Error(err); setSent(false); setCode(''); })} className="min-h-12 w-full rounded-xl bg-accent font-semibold text-accentink disabled:opacity-50">
-                Verify and turn on backup
-              </button>
-              <button onClick={() => { setSent(false); setCode(''); }} className="min-h-12 w-full rounded-xl border border-line">Use a different email</button>
-            </>
-          )}
-        </div>
+        <form
+          className="space-y-3"
+          onSubmit={(e) => { e.preventDefault(); void run(submit); }}
+        >
+          <p className="text-muted">Off by default. {mode === 'signup' ? 'Create an account' : 'Sign in'} to copy your ideas, photos and voice notes to your private account so you can recover or sync them. Without it, nothing leaves this device.</p>
+          <input type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" aria-label="Email" className="min-h-12 w-full rounded-xl border border-line bg-bg px-3" />
+          <input
+            type="password"
+            autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={`Password (${MIN_PASSWORD}+ characters)`}
+            aria-label="Password"
+            className="min-h-12 w-full rounded-xl border border-line bg-bg px-3"
+          />
+          <button
+            type="submit"
+            disabled={busy || !email.includes('@') || password.length < MIN_PASSWORD}
+            className="min-h-12 w-full rounded-xl bg-accent font-semibold text-accentink disabled:opacity-50"
+          >
+            {busy ? 'Working…' : mode === 'signup' ? 'Create account and turn on backup' : 'Sign in and turn on backup'}
+          </button>
+          <button type="button" onClick={() => { setMode(mode === 'signup' ? 'signin' : 'signup'); setMsg(''); setInfo(''); }} className="min-h-12 w-full rounded-xl border border-line">
+            {mode === 'signup' ? 'I already have an account' : 'Create a new account instead'}
+          </button>
+        </form>
       )}
+      {info && <p role="status" className="mt-3 text-ok">{info}</p>}
       {msg && <p role="alert" className="mt-3 text-fire">{msg}</p>}
     </div>
   );
