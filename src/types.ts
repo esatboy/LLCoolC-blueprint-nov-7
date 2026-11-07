@@ -27,7 +27,10 @@ export interface Capture {
   status: 'active' | 'archived';
   nextResurfaceAt: number | null;
   resonanceHistory: Resonance[];
-  sample?: boolean;
+  sample?: boolean; // sample data never syncs
+  updatedAt?: number; // last local edit (epoch ms), used for last-write-wins sync
+  blobPath?: string; // cloud storage path once uploaded
+  thumbPath?: string;
 }
 
 export interface AppEvent {

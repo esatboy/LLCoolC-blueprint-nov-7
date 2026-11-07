@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { APP_NAME } from './config';
 import { repo } from './data/repo';
-import { useDueCaptures, useMeta } from './data/hooks';
+import { useCaptures, useDueCaptures, useMeta } from './data/hooks';
+import { useSession } from './data/auth';
+import { syncNow } from './data/sync';
 import { DEFAULT_SETTINGS, type Settings, type Tab } from './types';
 import CaptureScreen from './screens/CaptureScreen';
 import BlueprintScreen from './screens/BlueprintScreen';
@@ -29,9 +31,23 @@ function useTheme(): Settings {
   return settings;
 }
 
+/** Background sync, only while signed in and online. Debounced; a no-op for local-only users. */
+function useAutoSync() {
+  const uid = useSession()?.user.id;
+  const captures = useCaptures();
+  useEffect(() => {
+    if (!uid) return;
+    const run = () => { if (navigator.onLine) syncNow(uid).catch(() => { /* recorded in meta.syncError */ }); };
+    const t = window.setTimeout(run, 3000);
+    window.addEventListener('online', run);
+    return () => { window.clearTimeout(t); window.removeEventListener('online', run); };
+  }, [uid, captures]);
+}
+
 export default function App() {
   const [tab, setTab] = useState<Tab>('capture'); // opens straight to capture
   useTheme();
+  useAutoSync();
   const dueCount = useDueCaptures().length;
 
   useEffect(() => {

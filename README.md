@@ -86,3 +86,17 @@ An on-device event log records captures, prompts shown and answered, exports and
 - Camera and microphone flows need a real phone over HTTPS for a full check.
 - Clearing site data in the browser deletes the journal (there is no cloud copy yet). Export a one-pager to keep a snapshot.
 - iOS Safari may evict site data for PWAs that are not installed and unused for a long time; installing to the home screen avoids that.
+
+## Cloud backup (optional, Supabase)
+
+The app is still local-first: IndexedDB is what the UI reads, and it works fully offline. Signing in (Settings > Cloud backup) adds a background sync to a Supabase project:
+
+- **Sign-in:** email one-time code (no redirect, works in the installed PWA).
+- **What syncs:** captures (text, tags, pillar, resonance history), photos and voice notes (private Storage bucket `captures`, folder per user), and the one-pager name/pitch/hero photos. **Never synced:** sample data, usage event log, settings (theme, LLM endpoint).
+- **Conflicts:** last-write-wins by `updatedAt`. Pull first, then push. Runs on sign-in, 3s after changes, and when the phone comes back online.
+- **Security:** row-level security on `captures` and `concept_meta` (`auth.uid() = user_id`), storage policies scoped to `<uid>/`.
+- **Code:** `src/data/sync.ts`, `src/data/mapping.ts` (pure, tested), `src/data/auth.ts`, `src/components/CloudCard.tsx`.
+
+Setup: copy `.env.example` to `.env.local` and fill in your project URL and publishable key. On Vercel, add the same two variables (`vercel env add VITE_SUPABASE_URL`, `vercel env add VITE_SUPABASE_ANON_KEY`) before deploying. Without them the cloud card says "Not configured" and the app stays local-only.
+
+Schema lives in the `blueprint_sync_schema` migration (tables `captures`, `concept_meta`, bucket `captures`).

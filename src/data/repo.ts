@@ -21,9 +21,9 @@ export interface Repo {
 export const localRepo: Repo = {
   listCaptures: () => db.captures.orderBy('createdAt').reverse().toArray(),
   getCapture: (id) => db.captures.get(id),
-  addCapture: async (c) => void (await db.captures.put(c)),
-  addCaptures: async (cs) => void (await db.captures.bulkPut(cs)),
-  updateCapture: async (id, patch) => void (await db.captures.update(id, patch)),
+  addCapture: async (c) => void (await db.captures.put({ ...c, updatedAt: Date.now() })),
+  addCaptures: async (cs) => void (await db.captures.bulkPut(cs.map((c) => ({ ...c, updatedAt: c.updatedAt ?? Date.now() })))),
+  updateCapture: async (id, patch) => void (await db.captures.update(id, { ...patch, updatedAt: Date.now() })),
   deleteCaptures: (ids) => db.captures.bulkDelete(ids),
   getMeta: async (key, fallback) => ((await db.meta.get(key))?.value as never) ?? fallback,
   setMeta: async (key, value) => void (await db.meta.put({ key, value })),

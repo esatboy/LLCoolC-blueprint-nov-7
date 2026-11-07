@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { repo } from '../data/repo';
 import { useCaptures, useMeta } from '../data/hooks';
 import { Chip } from '../components/ui';
+import CloudCard from '../components/CloudCard';
 import { APP_NAME } from '../config';
 import { usageExport } from '../lib/events';
 import { downloadBlob } from '../lib/onepagerRender';
@@ -58,9 +59,11 @@ export default function SettingsScreen() {
         )}
       </div>
 
+      <CloudCard />
+
       <div className="rounded-2xl border border-line bg-surface p-4">
         <h3 className="font-semibold">Privacy</h3>
-        <p className="mb-3 text-muted">Everything lives on this device. No accounts, no analytics sent anywhere. Nothing leaves unless you export a one-pager.</p>
+        <p className="mb-3 text-muted">Everything lives on this device unless you turn on cloud backup. No analytics are sent anywhere, and usage data stays local. Nothing is shared unless you export a one-pager.</p>
         <details>
           <summary className="min-h-12 cursor-pointer py-3 font-semibold">Optional: cloud pillar suggestions (off)</summary>
           <p className="mb-3 text-muted">Sends the text of new ideas to an endpoint you provide, to suggest a pillar. Photos and audio are never sent. Leave off to keep everything local.</p>

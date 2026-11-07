@@ -36,6 +36,7 @@ export default function OnePagerScreen({ onGo }: { onGo: (t: Tab) => void }) {
     const next = { ...(concept ?? DEFAULT_CONCEPT), ...patch };
     setConcept(next);
     void repo.setMeta('concept', next);
+    void repo.setMeta('conceptUpdatedAt', Date.now()); // used by cloud sync (last-write-wins)
   };
 
   async function render(target: HTMLCanvasElement) {
