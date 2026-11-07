@@ -25,7 +25,7 @@ Then load the page once, switch the network off (DevTools > Network > Offline) a
 ## Test
 
 ```bash
-npm test             # Vitest: scheduler, strength, pillar suggestion, one-pager, weekly, metrics
+npm test             # Vitest: scheduler, strength, pillar suggestion, one-pager, weekly, metrics, cloud sync (fake Supabase client)
 npm run build        # also typechecks (tsc --noEmit)
 ```
 

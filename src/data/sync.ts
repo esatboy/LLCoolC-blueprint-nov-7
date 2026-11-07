@@ -105,7 +105,8 @@ export function syncNow(userId: string): Promise<SyncResult> {
       await meta.set('syncError', '');
       return { pulled, pushed };
     } catch (e) {
-      await meta.set('syncError', e instanceof Error ? e.message : 'Sync failed');
+      const message = typeof e === 'object' && e && 'message' in e ? String((e as { message: unknown }).message) : 'Sync failed';
+      await meta.set('syncError', message);
       throw e;
     } finally {
       running = null;
