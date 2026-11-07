@@ -4,6 +4,7 @@ import { repo } from './data/repo';
 import { useMeta } from './data/hooks';
 import { DEFAULT_SETTINGS, type Settings, type Tab } from './types';
 import CaptureScreen from './screens/CaptureScreen';
+import BlueprintScreen from './screens/BlueprintScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import Placeholder from './screens/Placeholder';
 
@@ -58,6 +59,8 @@ export default function App() {
           <SettingsScreen />
         ) : tab === 'capture' ? (
           <CaptureScreen onGo={setTab} />
+        ) : tab === 'blueprint' ? (
+          <BlueprintScreen />
         ) : (
           <Placeholder title={NAV.find((n) => n.id === tab)!.label} />
         )}
