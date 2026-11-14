@@ -10,7 +10,8 @@ The app name is not final: change `APP_NAME` in [`src/config.ts`](src/config.ts)
 
 ```bash
 npm install
-npm run dev          # http://localhost:5173 (also on your LAN)
+npm run dev          # http://localhost:5173 (also on your LAN, plain http)
+npm run dev:phone    # https://<your-LAN-IP>:5173 (self-signed): use this to test camera, mic and install on a phone
 ```
 
 Open it in a phone-sized viewport. The service worker only runs in a production build, so to test installing and offline:

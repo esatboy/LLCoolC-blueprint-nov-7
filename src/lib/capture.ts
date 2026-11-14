@@ -1,5 +1,6 @@
 import { repo } from '../data/repo';
 import { DEFAULT_SETTINGS, type Capture, type CaptureType, type Origin, type PillarId, type Settings } from '../types';
+import { newId } from './id';
 import { initialResurfaceAt } from './scheduler';
 import { START_STRENGTH } from './strength';
 import { suggestPillar } from './suggestPillar';
@@ -29,7 +30,7 @@ export async function saveCapture(n: NewCapture): Promise<Capture> {
   const now = Date.now();
   const base = { type: n.type, text: n.text, tags: n.tags ?? [] };
   const capture: Capture = {
-    id: crypto.randomUUID(),
+    id: newId(),
     ...base,
     blob: n.blob,
     thumb: n.thumb,

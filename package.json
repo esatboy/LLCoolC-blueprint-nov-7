@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "dev:phone": "vite --host --mode phone --port 5173 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host --port 4173",
     "test": "vitest run",
@@ -23,6 +24,7 @@
     "@tailwindcss/vite": "^4.3.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
     "@vitejs/plugin-react": "^6.2.1",
     "fake-indexeddb": "^6.2.7",
     "tailwindcss": "^4.3.5",

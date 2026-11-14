@@ -1,6 +1,7 @@
 import { repo } from '../data/repo';
 import { db } from '../db';
 import type { Answer, Capture, Origin, PillarId } from '../types';
+import { newId } from './id';
 import { makeVariants } from './image';
 import { DAY, initialResurfaceAt, nextAfterAnswer } from './scheduler';
 import { computeStrength } from './strength';
@@ -166,7 +167,7 @@ export async function loadSampleData(now = Date.now()): Promise<number> {
     const last = resonanceHistory[resonanceHistory.length - 1];
     const img = s.photo ? photos.get(s.photo) : undefined;
     return {
-      id: crypto.randomUUID(),
+      id: newId(),
       type: img ? 'photo' : 'text',
       text: s.t,
       blob: img?.blob, thumb: img?.thumb, mime: img ? 'image/jpeg' : undefined,
